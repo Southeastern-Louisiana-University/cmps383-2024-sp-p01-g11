@@ -32,5 +32,53 @@ namespace Selu383.SP24.Api.Controllers
 
             return resultDto;
         }
+
+
+        [HttpGet("{id}")]
+        public ActionResult<HotelDTO> GetHotelById(int id)
+        {
+            var hotelDto = _context.Hotel?.Where(h => h.Id == id).FirstOrDefault();
+            if(hotelDto == null)
+            {
+                return NotFound();
+
+            }
+            return Ok(hotelDto);
+        }
+
+
+        [HttpPost]
+        public ActionResult<HotelDTO> CreateHotel(CreateHotelDTO createRequest)
+        {
+            if (string.IsNullOrEmpty(createRequest.Name) || createRequest.Name.Length > 120)
+            {
+                return BadRequest("Name must be provided and cannot be longer than 120 characters.");
+            }
+
+            if (string.IsNullOrEmpty(createRequest.Address))
+            {
+                return BadRequest("Must have an address.");
+            }
+
+            var newHotel = new Hotel
+            {
+                Name = createRequest.Name,
+                Address = createRequest.Address
+            };
+
+            _context.Hotel.Add(newHotel);
+            _context.SaveChanges();
+
+            var createdDto = new HotelDTO
+            {
+                Id = newHotel.Id,
+                Name = newHotel.Name,
+                Address = newHotel.Address
+            };
+
+
+            return CreatedAtAction(nameof(GetHotelById), new { id = createdDto.Id }, createdDto);
+        }
     }
+
 }

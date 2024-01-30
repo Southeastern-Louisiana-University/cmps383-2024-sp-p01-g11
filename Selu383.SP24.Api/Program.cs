@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,14 +13,12 @@ builder.Services.AddSwaggerGen();
 // Add Entity Framework Core
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DataContext")));
-
 var app = builder.Build();
 
-using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+using (var scope = app.Services.CreateScope())
 {
-    var context = serviceScope.ServiceProvider.GetService<DataContext>();
-    context.Database.Migrate();
-
+    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+    db.Database.Migrate();
 }
 
 // Configure the HTTP request pipeline.

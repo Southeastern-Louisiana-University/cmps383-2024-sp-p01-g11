@@ -52,12 +52,12 @@ namespace Selu383.SP24.Api.Controllers
         {
             if (string.IsNullOrEmpty(createRequest.Name) || createRequest.Name.Length > 120)
             {
-                return BadRequest("Name must be provided and cannot be longer than 120 characters.");
+                return BadRequest("Name must be provided and exceed 120 characters.");
             }
 
             if (string.IsNullOrEmpty(createRequest.Address))
             {
-                return BadRequest("Must have an address.");
+                return BadRequest("Must provide an address.");
             }
 
             var newHotel = new Hotel
@@ -78,6 +78,27 @@ namespace Selu383.SP24.Api.Controllers
 
 
             return CreatedAtAction(nameof(GetHotelById), new { id = createdDto.Id }, createdDto);
+        }
+
+        [HttpDelete("{id}")]
+
+        public ActionResult DeleteHotel(int id)
+        {
+            var hotelToDelete = _context.Hotel.Find(id);
+            if (hotelToDelete == null)
+            {
+                return NotFound();
+            }
+
+            _context.Hotel.Remove(hotelToDelete);
+            _context.SaveChanges();
+
+            return Ok(new HotelDTO
+            {
+                Id = hotelToDelete.Id,
+                Name = hotelToDelete.Name,
+                Address = hotelToDelete.Address
+            });
         }
     }
 

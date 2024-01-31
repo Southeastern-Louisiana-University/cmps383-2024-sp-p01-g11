@@ -14,10 +14,10 @@ public static class SeedData
             serviceProvider.GetRequiredService<
                 DbContextOptions<DataContext>>()))
         {
-            // Look for any movies.
+            
             if (context.Hotel.Any())
             {
-                return;   // DB has been seeded
+                return;  
             }
             context.Hotel.AddRange(
                 new Hotel

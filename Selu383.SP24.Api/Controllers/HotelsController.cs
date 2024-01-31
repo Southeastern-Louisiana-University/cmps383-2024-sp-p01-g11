@@ -10,12 +10,12 @@ namespace Selu383.SP24.Api.Controllers
     public class HotelController : ControllerBase
     {
         private readonly ILogger<HotelController> _logger;
-        private readonly DataContext _context; // Inject DataContext
+        private readonly DataContext _context; 
 
         public HotelController(ILogger<HotelController> logger, DataContext context)
         {
             _logger = logger;
-            _context = context; // Initialize DataContext
+            _context = context; 
         }
 
         [HttpGet]
@@ -78,6 +78,34 @@ namespace Selu383.SP24.Api.Controllers
 
 
             return CreatedAtAction(nameof(GetHotelById), new { id = createdDto.Id }, createdDto);
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult UpdateHotel([FromBody] HotelDTO updateDto, int id)
+        {
+
+            var hotelToUpdate = _context.Set<Hotel>()
+                .FirstOrDefault(h => h.Id == id);
+
+            if (hotelToUpdate == null)
+            {
+                return NotFound();
+            }
+            hotelToUpdate.Id = updateDto.Id;
+            hotelToUpdate.Name = updateDto.Name;
+            hotelToUpdate.Address = updateDto.Address;
+
+            _context.SaveChanges();
+
+            var hotelToReturn = new HotelDTO
+            {
+                Id = hotelToUpdate.Id,
+                Name = hotelToUpdate.Name,
+                Address = hotelToUpdate.Address,
+            };
+
+            return Ok(hotelToReturn);
+
         }
 
         [HttpDelete("{id}")]

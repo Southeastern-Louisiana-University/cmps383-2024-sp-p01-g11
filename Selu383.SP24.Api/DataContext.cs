@@ -15,10 +15,6 @@ public class DataContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Hotel>().Property(h => h.Name).HasMaxLength(150);
-        modelBuilder.Entity<Hotel>().HasData(
-            new Hotel { Id = 1, Name = "Hotel A", Address = "123 Main St" },
-            new Hotel { Id = 2, Name = "Hotel B", Address = "456 Oak St" },
-            new Hotel { Id = 3, Name = "Hotel C", Address = "789 Pine St" }
-        );
+        
     }
 }

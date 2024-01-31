@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +20,7 @@ var app = builder.Build();
 using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {
     var context = serviceScope.ServiceProvider.GetService<DataContext>();
-    context.Database.Migrate();
+        context.Database.Migrate();
 }
 
 // Configure the HTTP request pipeline.

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Selu383.SP24.Api.Features.Hotel;
 using System.Linq.Expressions;
+using System.Net;
 
 namespace Selu383.SP24.Api.Controllers
 {
@@ -30,14 +32,23 @@ namespace Selu383.SP24.Api.Controllers
         }
 
         [HttpGet]
-        [Route("all")]
-        public ActionResult<IEnumerable<HotelDto>> Get()
+        [Route("ListAllHotels")]
+        public ActionResult Get()
         {
-            return GetDtos().ToList();
+            var hotelDtos = GetDtos().ToList();
+
+            if (hotelDtos.Any())
+            {
+                return Ok(new { value = 200, data = hotelDtos });
+            }
+            else
+            {
+                return NoContent();
+            }
         }
 
 
-        [HttpGet(Name = "GetById")]
+        [HttpGet]
         [Route("{id}")]
         public ActionResult<HotelDto> GetById(int id)
         {
@@ -52,5 +63,95 @@ namespace Selu383.SP24.Api.Controllers
 
             return result;
         }
+
+        [HttpPost]
+        public ActionResult<HotelDto> CreateHotel(CreateHotelDto createRequest)
+        {
+            if (string.IsNullOrEmpty(createRequest.Name) || createRequest.Name.Length > 120)
+            {
+                return BadRequest("Name must be provided and cannot be longer than 120 characters.");
+            }
+
+            if (string.IsNullOrEmpty(createRequest.Address))
+            {
+                return BadRequest("Must have an address.");
+            }
+
+            var newHotel = new Hotel
+            {
+                Name = createRequest.Name,
+                Address = createRequest.Address
+            };
+
+            dataContext.Hotel.Add(newHotel);
+            dataContext.SaveChanges();
+
+            var createdDto = new HotelDto
+            {
+                Id = newHotel.Id,
+                Name = newHotel.Name,
+                Address = newHotel.Address
+            };
+
+
+            return CreatedAtAction(nameof(GetById), new { id = createdDto.Id }, createdDto);
+        }
+
+        [HttpDelete("{id}")]
+
+        public ActionResult DeleteHotel(int id)
+        {
+            var hotelToDelete = dataContext.Hotel.Find(id);
+            if (hotelToDelete == null)
+            {
+                return NotFound();
+            }
+
+            dataContext.Hotel.Remove(hotelToDelete);
+            dataContext.SaveChanges();
+
+            return Ok(new HotelDto
+            {
+                Id = hotelToDelete.Id,
+                Name = hotelToDelete.Name,
+                Address = hotelToDelete.Address
+            });
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult<HotelDto> Update(int id, UpdateHotelDto updateRequest)
+        {
+            var hotelToUpdate = dataContext.Hotel.Find(id);
+            if (hotelToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            if (!string.IsNullOrEmpty(updateRequest.Name))
+            {
+                if (updateRequest.Name.Length > 120)
+                {
+                    return BadRequest("Name cannot be longer than 120 characters.");
+                }
+                hotelToUpdate.Name = updateRequest.Name;
+            }
+
+            if (!string.IsNullOrEmpty(updateRequest.Address))
+            {
+                hotelToUpdate.Address = updateRequest.Address;
+            }
+
+            dataContext.SaveChanges();
+
+            var updatedDto = new HotelDto
+            {
+                Id = hotelToUpdate.Id,
+                Name = hotelToUpdate.Name,
+                Address = hotelToUpdate.Address
+            };
+
+            return updatedDto;
+        }
+
     }
 }

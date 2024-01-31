@@ -5,7 +5,9 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selu383.SP24.Api", "Selu383.SP24.Api\Selu383.SP24.Api.csproj", "{90E69E1C-C009-4FD7-832D-030AF062ED4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selu383.SP24.Tests", "Selu383.SP24.Tests\Selu383.SP24.Tests.csproj", "{2B9C9D0C-00C0-4611-8886-EAF4F726C86B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selu383.SP24.Tests", "Selu383.SP24.Tests\Selu383.SP24.Tests.csproj", "{2B9C9D0C-00C0-4611-8886-EAF4F726C86B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{705F5D9C-97F3-4152-81B5-CE1300EB10CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

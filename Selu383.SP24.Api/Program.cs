@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using Selu383.SP24.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +18,11 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    var services = scope.ServiceProvider;
     var db = scope.ServiceProvider.GetRequiredService<DataContext>();
     db.Database.Migrate();
+
+    SeedData.Initialize(services);
 }
 
 // Configure the HTTP request pipeline.
